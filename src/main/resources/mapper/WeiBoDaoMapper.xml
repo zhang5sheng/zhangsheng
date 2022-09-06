@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gl.it.dao.WeiBoDao">
+	<resultMap type="com.gl.it.entity.WeiBo" id="basemap">
+		<id column="wb_id" property="id" />
+		<result column="wb_userid" property="userId" />
+		<result column="wb_title" property="title" />
+		<result column="wb_content" property="content" />
+		<result column="wb_createtime" property="createTime" />
+		<result column="wb_readcount" property="readCount" />
+		<result column="wb_img" property="img"/>
+		
+		<result column="user_nickname" property="userNickName"/>
+	</resultMap>
+
+	<select id="selectAll" resultMap="basemap">
+		select wb.*,u.user_nickname from weibos wb
+		join users u on u.user_id=wb.wb_userid
+		order by wb_createtime desc
+	</select>
+	
+	<select id="selectById" resultMap="basemap">
+		select wb.*,u.user_nickname from weibos wb
+		join users u on u.user_id=wb.wb_userid
+		where wb.wb_id=#{id}
+	</select>
+	
+	<select id="selectCountByUser" resultType="int">
+		select count(1) from weibos where wb_userid=#{userid}
+	</select>
+	
+	<select id="selectListByUser" resultMap="basemap">
+		select wb.*,u.user_nickname from weibos wb
+		join users u on u.user_id=wb.wb_userid
+		where wb.wb_userid=#{userid} order by wb_readCount desc
+	</select>
+	
+	<insert id="insert">
+		insert into weibos values(
+		default,#{wb.userId},#{wb.title},#{wb.content},#{wb.createTime},#{wb.readCount},#{wb.img})
+	</insert>
+	
+	<update id="update">
+	    update weibos set wb_title=#{wb.title},wb_content=#{wb.content},wb_readCount=#{wb.readCount},wb_img=#{wb.img}
+	    where wb_id=#{wb.id}
+	</update>
+
+</mapper>
